@@ -111,7 +111,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         email,
         password,
         options: {
-          data: userData
+          data: {
+            ...userData,
+            user_type: userData.role
+          },
+          emailRedirectTo: `${window.location.origin}/dashboard`
         }
       });
       return { data, error };

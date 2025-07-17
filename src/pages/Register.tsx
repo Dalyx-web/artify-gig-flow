@@ -40,6 +40,7 @@ const Register = () => {
       const { error } = await signUp(formData.email, formData.password, {
         full_name: formData.fullName,
         role: formData.role,
+        user_type: formData.role,
       });
 
       if (error) {
