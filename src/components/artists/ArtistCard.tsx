@@ -22,6 +22,7 @@ interface Artist {
   rating: number;
   total_reviews: number;
   profiles: {
+    id: string;
     full_name: string;
     avatar_url: string | null;
   };

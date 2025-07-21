@@ -21,6 +21,7 @@ interface Artist {
   rating: number;
   total_reviews: number;
   profiles: {
+    id: string;
     full_name: string;
     avatar_url: string | null;
   };
@@ -86,6 +87,7 @@ const Artists = () => {
         .select(`
           *,
           profiles!inner (
+            id,
             full_name,
             avatar_url
           ),
@@ -295,8 +297,31 @@ const Artists = () => {
 
                 {filteredArtists.length === 0 && !loading && (
                   <div className="text-center py-12">
-                    <p className="text-xl text-muted-foreground mb-2">No artists found</p>
-                    <p className="text-muted-foreground">Try adjusting your filters or search criteria</p>
+                    {artists.length === 0 ? (
+                      <div className="animate-fade-in">
+                        <div className="mb-8">
+                          <div className="w-24 h-24 mx-auto bg-gradient-hero rounded-full flex items-center justify-center shadow-glow mb-4">
+                            <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                            </svg>
+                          </div>
+                          <h3 className="text-2xl font-bold mb-2">Be the First Artist!</h3>
+                          <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                            ArtUne is ready for talented artists like you. Create your profile and start connecting with clients who need your unique skills.
+                          </p>
+                          <div className="space-y-3">
+                            <p className="text-sm text-muted-foreground">✨ Showcase your portfolio</p>
+                            <p className="text-sm text-muted-foreground">🎯 Connect with ideal clients</p>
+                            <p className="text-sm text-muted-foreground">💰 Set your own rates</p>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div>
+                        <p className="text-xl text-muted-foreground mb-2">No artists found</p>
+                        <p className="text-muted-foreground">Try adjusting your filters or search criteria</p>
+                      </div>
+                    )}
                   </div>
                 )}
               </>
