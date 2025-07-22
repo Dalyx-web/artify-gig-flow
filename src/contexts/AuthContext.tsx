@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 
 // User roles for the platform
 export type UserRole = 'artist' | 'client' | 'admin';
@@ -69,7 +69,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { data: profile, error } = await supabase
         .from('profiles')
         .select('*')
-        .eq('id', authUser.id)
+        .eq('user_id', authUser.id)
         .single();
 
       if (error && error.code !== 'PGRST116') {
@@ -80,7 +80,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Create extended user object
       const appUser: AppUser = {
         ...authUser,
-        role: profile?.role || 'client',
+        role: (profile?.user_type as UserRole) || 'client',
         profile: profile || {}
       };
 
