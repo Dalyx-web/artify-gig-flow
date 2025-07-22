@@ -14,6 +14,7 @@ export interface AppUser extends User {
     is_premium?: boolean;
     subscription_tier?: string;
     subscription_end?: string;
+    user_type?: string;
   };
 }
 
