@@ -38,9 +38,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Get initial session
     const getInitialSession = async () => {
+      console.log('🔄 Getting initial session...');
       const { data: { session } } = await supabase.auth.getSession();
       setSession(session);
       if (session?.user) {
+        console.log('👤 Initial user found:', session.user.email);
         await fetchUserProfile(session.user);
       }
       setLoading(false);
@@ -48,16 +50,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     getInitialSession();
 
-    // Listen for auth changes
+    // Listen for auth changes - NEVER use async in the callback
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      (event, session) => {
+        console.log('🔔 Auth state change:', event, session?.user?.email);
         setSession(session);
+        setLoading(false);
+        
+        // Defer Supabase calls with setTimeout to prevent deadlocks
         if (session?.user) {
-          await fetchUserProfile(session.user);
+          setTimeout(() => {
+            fetchUserProfile(session.user);
+          }, 0);
         } else {
           setUser(null);
         }
-        setLoading(false);
       }
     );
 
@@ -66,6 +73,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const fetchUserProfile = async (authUser: User) => {
     try {
+      console.log('🔍 Fetching profile for user:', authUser.id, authUser.email);
+      
       // Fetch user profile from profiles table
       const { data: profile, error } = await supabase
         .from('profiles')
@@ -73,8 +82,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .eq('user_id', authUser.id)
         .single();
 
+      console.log('📋 Profile query result:', { profile, error });
+
       if (error && error.code !== 'PGRST116') {
-        console.error('Error fetching profile:', error);
+        console.error('❌ Error fetching profile:', error);
         return;
       }
 
@@ -85,9 +96,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         profile: profile || {}
       };
 
+      console.log('✅ Setting user with role:', appUser.role, 'Profile:', appUser.profile);
       setUser(appUser);
     } catch (error) {
-      console.error('Error in fetchUserProfile:', error);
+      console.error('💥 Error in fetchUserProfile:', error);
       setUser({ ...authUser, role: 'client' });
     }
   };
