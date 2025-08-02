@@ -14,6 +14,7 @@ import Register from "./pages/Register";
 import JobBoard from "./pages/JobBoard";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
+import ArtistOnboarding from "./pages/ArtistOnboarding";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="/artist/:id" element={<ArtistProfile />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/artist-onboarding" element={<ArtistOnboarding />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/job-board" element={<JobBoard />} />
             <Route path="/admin" element={<Admin />} />

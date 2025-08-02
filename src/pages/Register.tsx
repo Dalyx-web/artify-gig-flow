@@ -52,9 +52,17 @@ const Register = () => {
       } else {
         toast({
           title: "Account created!",
-          description: "Please check your email to verify your account.",
+          description: formData.role === 'artist' 
+            ? "Please check your email to verify your account, then complete your artist profile." 
+            : "Please check your email to verify your account.",
         });
-        navigate('/login');
+        
+        // Redirect artists to onboarding after email verification
+        if (formData.role === 'artist') {
+          navigate('/artist-onboarding');
+        } else {
+          navigate('/login');
+        }
       }
     } catch (error) {
       console.error('Registration error:', error);
