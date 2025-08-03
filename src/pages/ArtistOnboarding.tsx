@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -24,6 +25,13 @@ interface FormData {
   genres: string[];
   experience_years: number;
   formation: string;
+  
+  // Campos específicos por tipo de artista
+  instruments?: string[];
+  performance_style?: string;
+  repertoire_size?: number;
+  equipment_needs?: string[];
+  special_skills?: string[];
   
   // Social Links
   youtube_url: string;
@@ -61,6 +69,11 @@ const ArtistOnboarding = () => {
     genres: [],
     experience_years: 0,
     formation: 'solista',
+    instruments: [],
+    performance_style: '',
+    repertoire_size: 50,
+    equipment_needs: [],
+    special_skills: [],
     youtube_url: '',
     spotify_url: '',
     instagram_url: '',
@@ -96,13 +109,22 @@ const ArtistOnboarding = () => {
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
+      // Preparar datos adicionales específicos del artista
+      const additionalData = {
+        instruments: formData.instruments || [],
+        performance_style: formData.performance_style || '',
+        repertoire_size: formData.repertoire_size || 0,
+        equipment_needs: formData.equipment_needs || [],
+        special_skills: formData.special_skills || []
+      };
+
       // Create artist profile
       const { data: artistProfile, error: profileError } = await supabase
         .from('artist_profiles')
         .insert({
           user_id: user.id,
           artistic_name: formData.artistic_name,
-          bio: formData.bio,
+          bio: `${formData.bio}\n\nDatos adicionales: ${JSON.stringify(additionalData)}`,
           location: formData.location,
           experience_years: formData.experience_years,
           hourly_rate: formData.hourly_rate,
