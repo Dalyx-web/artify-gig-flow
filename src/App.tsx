@@ -15,6 +15,7 @@ import JobBoard from "./pages/JobBoard";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import ArtistOnboarding from "./pages/ArtistOnboarding";
+import Messages from "./pages/Messages";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +41,7 @@ const App = () => (
             <Route path="/artist-onboarding" element={<ArtistOnboarding />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/job-board" element={<JobBoard />} />
+            <Route path="/messages" element={<Messages />} />
             <Route path="/admin" element={<Admin />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Music, Menu, X, User, LogOut } from 'lucide-react';
+import { Music, Menu, X, User, LogOut, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import {
@@ -42,6 +42,15 @@ export function Navbar() {
             >
               Find Artists
             </Link>
+            {user && (
+              <Link
+                to="/messages"
+                className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2"
+              >
+                <MessageSquare className="w-4 h-4" />
+                Messages
+              </Link>
+            )}
             {user?.role === 'artist' && user?.profile?.is_premium && (
               <Link
                 to="/job-board"
@@ -120,6 +129,16 @@ export function Navbar() {
               >
                 Find Artists
               </Link>
+              {user && (
+                <Link
+                  to="/messages"
+                  className="text-muted-foreground hover:text-primary transition-colors px-2 py-1 flex items-center gap-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <MessageSquare className="w-4 h-4" />
+                  Messages
+                </Link>
+              )}
               {user?.role === 'artist' && user?.profile?.is_premium && (
                 <Link
                   to="/job-board"

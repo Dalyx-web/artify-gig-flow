@@ -9,9 +9,11 @@ import { Button } from '@/components/ui/button';
 import { Star, MapPin, Clock, Heart, MessageCircle, Globe, Instagram, Twitter, Facebook, Linkedin } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { ContactArtistButton } from '@/components/messages/ContactArtistButton';
 
 interface ArtistProfileData {
   id: string;
+  user_id: string;
   artistic_name: string | null;
   bio: string | null;
   location: string | null;
@@ -326,10 +328,11 @@ const ArtistProfile = () => {
                     <Heart className={`w-4 h-4 mr-2 ${isFavorited ? 'fill-current' : ''}`} />
                     {isFavorited ? 'Favorited' : 'Favorite'}
                   </Button>
-                  <Button size="sm">
-                    <MessageCircle className="w-4 h-4 mr-2" />
-                    Message
-                  </Button>
+                  <ContactArtistButton 
+                    artistUserId={artist.user_id}
+                    artistName={artist.artistic_name || artist.profiles?.full_name || undefined}
+                    className="size-sm"
+                  />
                 </div>
               </div>
               

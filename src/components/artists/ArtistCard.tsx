@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { ContactArtistButton } from '@/components/messages/ContactArtistButton';
 
 interface Artist {
   id: string;
@@ -280,9 +281,12 @@ export const ArtistCard: React.FC<ArtistCardProps> = ({ artist }) => {
             </Button>
           </Link>
           
-          <Button size="icon" variant="outline">
-            <MessageCircle className="w-4 h-4" />
-          </Button>
+          <ContactArtistButton 
+            artistUserId={artist.user_id}
+            artistName={artist.artistic_name || artist.profiles.full_name}
+            className="h-10 w-10 p-0"
+            iconOnly={true}
+          />
         </div>
       </CardContent>
     </Card>
