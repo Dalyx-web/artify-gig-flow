@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate, Navigate } from 'react-router-dom';
+import { Link, useNavigate, Navigate, useSearchParams } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,6 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 
 const Login = () => {
+  const [searchParams] = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -38,7 +39,13 @@ const Login = () => {
           title: "Welcome back!",
           description: "Successfully signed in.",
         });
-        navigate('/dashboard');
+        // Navigate based on next parameter or user type
+        const nextPage = searchParams.get('next');
+        if (nextPage === 'artist-onboarding') {
+          navigate('/artist-onboarding');
+        } else {
+          navigate('/dashboard');
+        }
       }
     } catch (error) {
       console.error('Login error:', error);

@@ -57,12 +57,8 @@ const Register = () => {
             : "Please check your email to verify your account.",
         });
         
-        // Redirect artists to onboarding after email verification
-        if (formData.role === 'artist') {
-          navigate('/artist-onboarding');
-        } else {
-          navigate('/login');
-        }
+        // Always redirect to login for email verification first
+        navigate('/login?next=' + (formData.role === 'artist' ? 'artist-onboarding' : 'dashboard'));
       }
     } catch (error) {
       console.error('Registration error:', error);
