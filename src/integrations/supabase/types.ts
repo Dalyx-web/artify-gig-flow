@@ -269,6 +269,63 @@ export type Database = {
           },
         ]
       }
+      message_infractions: {
+        Row: {
+          blocked_at: string
+          conversation_id: string
+          detected_patterns: Json
+          id: string
+          infraction_type: string
+          message_content: string
+          review_status: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          severity: string
+          user_id: string
+        }
+        Insert: {
+          blocked_at?: string
+          conversation_id: string
+          detected_patterns?: Json
+          id?: string
+          infraction_type: string
+          message_content: string
+          review_status?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          severity?: string
+          user_id: string
+        }
+        Update: {
+          blocked_at?: string
+          conversation_id?: string
+          detected_patterns?: Json
+          id?: string
+          infraction_type?: string
+          message_content?: string
+          review_status?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          severity?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_infractions_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "message_infractions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       messages: {
         Row: {
           booking_id: string | null
@@ -603,12 +660,85 @@ export type Database = {
           },
         ]
       }
+      user_strikes: {
+        Row: {
+          created_at: string
+          last_strike_at: string | null
+          strike_count: number
+          suspension_until: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          last_strike_at?: string | null
+          strike_count?: number
+          suspension_until?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          last_strike_at?: string | null
+          strike_count?: number
+          suspension_until?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_strikes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      whitelisted_domains: {
+        Row: {
+          category: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          domain: string
+          id: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          domain: string
+          id?: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          domain?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "whitelisted_domains_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      increment_user_strikes: {
+        Args: { target_user_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
