@@ -133,6 +133,43 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
     setSending(true);
 
     try {
+      // 1. Llamar al sistema de moderación ANTES de enviar
+      console.log('Moderating message before sending...');
+      const { data: moderationResult, error: moderationError } = await supabase.functions.invoke(
+        'moderate-message', 
+        {
+          body: { 
+            content: newMessage.trim(), 
+            userId: currentUser.id,
+            conversationId: conversationId
+          }
+        }
+      );
+
+      if (moderationError) {
+        console.error('Moderation error:', moderationError);
+        throw new Error('Error en el sistema de moderación');
+      }
+
+      console.log('Moderation result:', moderationResult);
+
+      // 2. Si el mensaje está bloqueado, mostrar advertencia específica
+      if (moderationResult?.isBlocked) {
+        const warningMessage = getWarningMessage(moderationResult.infractions[0]?.type, moderationResult.severity);
+        
+        toast({
+          title: "Mensaje bloqueado",
+          description: warningMessage,
+          variant: "destructive",
+          duration: 8000, // Mostrar más tiempo para que lean la advertencia
+        });
+        
+        setNewMessage('');
+        setSending(false);
+        return;
+      }
+
+      // 3. Si pasa la moderación, enviar el mensaje normalmente
       const { error } = await supabase
         .from('messages')
         .insert({
@@ -156,6 +193,46 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
     } finally {
       setSending(false);
     }
+  };
+
+  const getWarningMessage = (type: string, severity: string) => {
+    const warnings = {
+      email: {
+        warning: "Tu mensaje contiene una dirección de email. Para tu seguridad, mantén toda la comunicación en la plataforma.",
+        severe: "Se detectó información de contacto por email. Esto está prohibido para proteger a todos los usuarios.",
+        critical: "Violación grave: Intento de compartir información de contacto. Revisa nuestras políticas."
+      },
+      phone: {
+        warning: "Detectamos un posible número de teléfono. Evita compartir información de contacto personal.",
+        severe: "Se bloqueó un número de teléfono. Para tu seguridad, no compartas datos personales.",
+        critical: "Violación grave: Intento de compartir número telefónico. Tu cuenta puede ser suspendida."
+      },
+      social: {
+        warning: "Tu mensaje menciona redes sociales. Mantén todas las negociaciones en nuestra plataforma.",
+        severe: "Se detectó intento de redirección a redes sociales. Usa solo nuestros canales oficiales.",
+        critical: "Violación grave: Intento de llevar la conversación fuera de la plataforma."
+      },
+      payment: {
+        warning: "Se mencionó un método de pago externo. Usa nuestro sistema de pagos seguro.",
+        severe: "Intento de pago fuera de la plataforma detectado. Esto está estrictamente prohibido.",
+        critical: "Violación crítica: Intento de evasión del sistema de pagos. Riesgo de suspensión inmediata."
+      },
+      external_link: {
+        warning: "Tu mensaje contiene un enlace externo. Solo se permiten enlaces a portfolios aprobados.",
+        severe: "Enlace externo bloqueado. Usa solo enlaces de la lista de sitios permitidos.",
+        critical: "Violación grave: Enlace no autorizado detectado."
+      },
+      suspension: "Tu cuenta está temporalmente suspendida debido a infracciones previas. Revisa nuestras políticas de uso."
+    };
+
+    const typeWarnings = warnings[type as keyof typeof warnings];
+    if (!typeWarnings) return "Tu mensaje fue bloqueado por políticas de seguridad.";
+    
+    if (typeof typeWarnings === 'object') {
+      return (typeWarnings as any)[severity] || (typeWarnings as any).warning || "Tu mensaje fue bloqueado por políticas de seguridad.";
+    }
+    
+    return typeWarnings;
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
