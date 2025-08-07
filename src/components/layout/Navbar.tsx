@@ -51,7 +51,7 @@ export function Navbar() {
                 Messages
               </Link>
             )}
-            {user?.role === 'artist' && user?.profile?.is_premium && (
+            {user?.profile?.user_type === 'artist' && user?.profile?.is_premium && (
               <Link
                 to="/job-board"
                 className="text-muted-foreground hover:text-primary transition-colors"
@@ -75,7 +75,7 @@ export function Navbar() {
                   <DropdownMenuItem onClick={() => navigate('/dashboard')}>
                     Dashboard
                   </DropdownMenuItem>
-                  {user.role === 'admin' && (
+                  {user.profile?.user_type === 'admin' && (
                     <DropdownMenuItem onClick={() => navigate('/admin')}>
                       Admin Panel
                     </DropdownMenuItem>
@@ -139,7 +139,7 @@ export function Navbar() {
                   Messages
                 </Link>
               )}
-              {user?.role === 'artist' && user?.profile?.is_premium && (
+              {user?.profile?.user_type === 'artist' && user?.profile?.is_premium && (
                 <Link
                   to="/job-board"
                   className="text-muted-foreground hover:text-primary transition-colors px-2 py-1"
@@ -158,7 +158,7 @@ export function Navbar() {
                   >
                     Dashboard
                   </Link>
-                  {user.role === 'admin' && (
+                  {user.profile?.user_type === 'admin' && (
                     <Link
                       to="/admin"
                       className="text-muted-foreground hover:text-primary transition-colors px-2 py-1"
