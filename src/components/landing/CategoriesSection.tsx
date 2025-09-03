@@ -89,7 +89,7 @@ export function CategoriesSection() {
 
         {/* Categories Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          {categories.map((category) => {
+          {categories.map((category, index) => {
             const IconComponent = category.icon;
             return (
               <Link
@@ -97,7 +97,7 @@ export function CategoriesSection() {
                 to={`/artists?category=${category.id}`}
                 className="group"
               >
-                <Card className="hover-lift shadow-card bg-card/80 backdrop-blur border-0 h-full">
+                <Card className="hover-lift shadow-card bg-card/80 backdrop-blur border-0 h-full animate-scale-in" style={{ animationDelay: `${index * 0.05}s` }}>
                   <CardContent className="p-6 text-center space-y-4">
                     {/* Icon with gradient background */}
                     <div className={`w-16 h-16 mx-auto rounded-xl bg-gradient-to-br ${category.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>

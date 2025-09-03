@@ -66,7 +66,7 @@ export function FeaturesSection() {
             return (
               <Card 
                 key={index} 
-                className="hover-lift shadow-card bg-card/90 backdrop-blur border-0 h-full"
+                className="hover-lift shadow-card bg-card/90 backdrop-blur border-0 h-full animate-slide-up"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <CardContent className="p-8 text-center space-y-4">

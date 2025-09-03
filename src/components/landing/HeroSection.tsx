@@ -71,7 +71,7 @@ export function HeroSection() {
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             <Link to="/artists">
-              <Button size="lg" className="gradient-button text-white text-lg px-8 hover-lift">
+              <Button size="lg" className="gradient-button text-white text-lg px-8 hover-lift animate-slide-up">
                 <Music className="w-5 h-5 mr-2" />
                 Find Artists
                 <ArrowRight className="w-5 h-5 ml-2" />
@@ -81,28 +81,59 @@ export function HeroSection() {
               <Button 
                 size="lg" 
                 variant="outline" 
-                className="text-lg px-8 border-white text-white hover:bg-white hover:text-primary hover-lift"
+                className="text-lg px-8 border-white text-white hover:bg-white hover:text-primary hover-lift animate-slide-up"
+                style={{ animationDelay: '0.1s' }}
               >
                 Join as Artist
               </Button>
             </Link>
           </div>
 
+          {/* Go Pro CTA Banner */}
+          <div className="mt-12 animate-fade-in" style={{ animationDelay: '0.3s' }}>
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary/90 via-secondary/80 to-primary/90 p-1">
+              <div className="bg-black/20 rounded-xl backdrop-blur-sm p-6 text-center">
+                <div className="flex items-center justify-center gap-2 mb-3">
+                  <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
+                  <span className="text-yellow-400 font-semibold text-sm uppercase tracking-wider">
+                    Limited Time Offer
+                  </span>
+                  <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
+                </div>
+                <h3 className="text-2xl font-bold text-white mb-2">
+                  Unlock Premium Features
+                </h3>
+                <p className="text-white/90 mb-4 max-w-md mx-auto">
+                  Get exclusive access to the Job Board, advanced analytics, and priority visibility
+                </p>
+                <Link to="/register">
+                  <Button 
+                    size="lg" 
+                    className="bg-white text-primary hover:bg-white/90 font-semibold px-8 hover-lift shadow-glow"
+                  >
+                    Go Pro Now
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+
           {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-12">
-            <div className="text-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-16">
+            <div className="text-center animate-scale-in" style={{ animationDelay: '0.5s' }}>
               <div className="text-3xl md:text-4xl font-bold text-white">500+</div>
               <div className="text-white/80 text-sm md:text-base">Artists</div>
             </div>
-            <div className="text-center">
+            <div className="text-center animate-scale-in" style={{ animationDelay: '0.6s' }}>
               <div className="text-3xl md:text-4xl font-bold text-white">1,200+</div>
               <div className="text-white/80 text-sm md:text-base">Bookings</div>
             </div>
-            <div className="text-center">
+            <div className="text-center animate-scale-in" style={{ animationDelay: '0.7s' }}>
               <div className="text-3xl md:text-4xl font-bold text-white">50+</div>
               <div className="text-white/80 text-sm md:text-base">Cities</div>
             </div>
-            <div className="text-center">
+            <div className="text-center animate-scale-in" style={{ animationDelay: '0.8s' }}>
               <div className="text-3xl md:text-4xl font-bold text-white">24/7</div>
               <div className="text-white/80 text-sm md:text-base">Support</div>
             </div>
