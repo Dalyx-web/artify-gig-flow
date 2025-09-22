@@ -2,7 +2,24 @@ import React, { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { Navbar } from '@/components/layout/Navbar';
 import { useAuth } from '@/contexts/AuthContext';
-import { Music, Calendar, DollarSign, Users, MessageCircle, Star, Settings, TrendingUp, Award } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
+import { 
+  Music, 
+  Calendar, 
+  DollarSign, 
+  Users, 
+  MessageCircle, 
+  Star, 
+  Settings, 
+  TrendingUp, 
+  Award,
+  User,
+  BookOpen,
+  MapPin,
+  Clock,
+  ChevronRight,
+  Eye
+} from 'lucide-react';
 
 // Welcome screen component with role-specific animations
 const WelcomeScreen = ({ role, userName }: { role: string; userName: string }) => {
@@ -27,14 +44,14 @@ const WelcomeScreen = ({ role, userName }: { role: string; userName: string }) =
     <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex items-center justify-center">
       <div className="text-center animate-scale-in">
         <div className="mb-8 animate-bounce">
-          <div className="w-24 h-24 mx-auto bg-gradient-hero rounded-full flex items-center justify-center shadow-glow">
+          <div className="w-24 h-24 mx-auto bg-primary rounded-full flex items-center justify-center shadow-glow">
             <Music className="w-12 h-12 text-white" />
           </div>
         </div>
-        <h1 className="text-4xl md:text-6xl font-display font-bold mb-4 animate-fade-in gradient-hero bg-clip-text text-transparent">
+        <h1 className="text-4xl md:text-6xl font-display font-bold mb-4 animate-fade-in text-white">
           Welcome, {userName}!
         </h1>
-        <p className="text-xl md:text-2xl text-muted-foreground animate-slide-up delay-200">
+        <p className="text-xl md:text-2xl text-cyan animate-slide-up delay-200">
           {message}
         </p>
       </div>
@@ -42,89 +59,181 @@ const WelcomeScreen = ({ role, userName }: { role: string; userName: string }) =
   );
 };
 
-// Role-specific dashboard components
+// Top Navigation Bar Component
+const DashboardNav = () => {
+  const [activeTab, setActiveTab] = useState('profile');
+  
+  const navItems = [
+    { id: 'profile', label: 'Profile', icon: User },
+    { id: 'calendar', label: 'Calendar', icon: Calendar },
+    { id: 'bookings', label: 'Bookings', icon: BookOpen },
+    { id: 'messages', label: 'Messages', icon: MessageCircle },
+    { id: 'settings', label: 'Settings', icon: Settings },
+  ];
+
+  return (
+    <div className="bg-card border-b border-border mb-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex space-x-8">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = activeTab === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => setActiveTab(item.id)}
+                className={`flex items-center space-x-2 py-4 px-4 border-b-2 transition-all duration-200 ${
+                  isActive 
+                    ? 'border-primary bg-primary/10 text-primary' 
+                    : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted'
+                }`}
+              >
+                <Icon className="w-5 h-5" />
+                <span className="font-medium">{item.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Artist Dashboard with new SaaS design
 const ArtistDashboard = ({ user }: { user: any }) => (
   <div className="space-y-8">
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <div className="bg-card p-6 rounded-lg shadow-card hover-lift animate-fade-in">
+    {/* Top row - Main widgets */}
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* Next Event Widget - Left */}
+      <div className="bg-card p-6 rounded-2xl border border-border hover:border-primary/50 transition-all duration-300 animate-fade-in">
         <div className="flex items-center justify-between mb-4">
-          <Calendar className="w-8 h-8 text-primary" />
-          <span className="text-2xl font-bold text-primary">3</span>
+          <h3 className="text-lg font-semibold text-foreground">Next Event</h3>
+          <Calendar className="w-6 h-6 text-primary" />
         </div>
-        <h3 className="text-lg font-semibold mb-2">Upcoming Gigs</h3>
-        <p className="text-muted-foreground">Next: Tonight at 8 PM</p>
+        <div className="space-y-3">
+          <div className="flex items-center text-cyan text-2xl font-bold">
+            Dec 24, 2024
+          </div>
+          <div className="flex items-center space-x-2 text-muted-foreground">
+            <MapPin className="w-4 h-4" />
+            <span>Grand Ballroom, Hotel Plaza</span>
+          </div>
+          <div className="flex items-center space-x-2 text-muted-foreground">
+            <Clock className="w-4 h-4" />
+            <span>8:00 PM - 11:00 PM</span>
+          </div>
+          <div className="flex items-center justify-between pt-2">
+            <span className="text-lg font-semibold text-foreground">$850</span>
+            <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
+              Confirmed
+            </span>
+          </div>
+        </div>
       </div>
-      
-      <div className="bg-card p-6 rounded-lg shadow-card hover-lift animate-fade-in delay-100">
+
+      {/* Quick Quote Management - Center */}
+      <div className="bg-card p-6 rounded-2xl border border-border hover:border-primary/50 transition-all duration-300 animate-fade-in delay-100">
         <div className="flex items-center justify-between mb-4">
-          <MessageCircle className="w-8 h-8 text-secondary" />
-          <span className="text-2xl font-bold text-secondary">5</span>
+          <h3 className="text-lg font-semibold text-foreground">Quick Quote</h3>
+          <MessageCircle className="w-6 h-6 text-primary" />
         </div>
-        <h3 className="text-lg font-semibold mb-2">New Requests</h3>
-        <p className="text-muted-foreground">2 high priority</p>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <span className="text-muted-foreground">Pending Quotes</span>
+            <span className="text-cyan text-xl font-bold">3</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-muted-foreground">Response Time</span>
+            <span className="text-foreground font-semibold">&lt; 2 hrs</span>
+          </div>
+          <div className="pt-2">
+            <span className="px-3 py-1 bg-warning/10 text-warning rounded-full text-sm font-medium mb-4 inline-block">
+              2 High Priority
+            </span>
+          </div>
+          <button className="w-full bg-coral hover:bg-coral/90 text-coral-foreground font-semibold py-3 px-4 rounded-xl transition-all duration-200 hover:scale-105">
+            Manage Quotes
+          </button>
+        </div>
       </div>
-      
-      <div className="bg-card p-6 rounded-lg shadow-card hover-lift animate-fade-in delay-200">
+
+      {/* Profile Visibility - Right */}
+      <div className="bg-card p-6 rounded-2xl border border-border hover:border-primary/50 transition-all duration-300 animate-fade-in delay-200">
         <div className="flex items-center justify-between mb-4">
-          <DollarSign className="w-8 h-8 text-success" />
-          <span className="text-2xl font-bold text-success">$2,450</span>
+          <h3 className="text-lg font-semibold text-foreground">Profile Visibility</h3>
+          <Eye className="w-6 h-6 text-primary" />
         </div>
-        <h3 className="text-lg font-semibold mb-2">This Month</h3>
-        <p className="text-muted-foreground">+15% from last month</p>
-      </div>
-      
-      <div className="bg-card p-6 rounded-lg shadow-card hover-lift animate-fade-in delay-300">
-        <div className="flex items-center justify-between mb-4">
-          <Star className="w-8 h-8 text-warning" />
-          <span className="text-2xl font-bold">4.9</span>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <span className="text-muted-foreground">Completion</span>
+            <span className="text-cyan text-xl font-bold">85%</span>
+          </div>
+          <Progress value={85} className="h-3" />
+          <div className="space-y-2 text-sm">
+            <div className="flex items-center justify-between">
+              <span className="text-muted-foreground">Profile Views</span>
+              <span className="text-foreground font-semibold">1,234</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-muted-foreground">Search Ranking</span>
+              <span className="text-foreground font-semibold">#12</span>
+            </div>
+          </div>
+          <button className="w-full bg-primary/10 hover:bg-primary/20 text-primary font-medium py-2 px-4 rounded-lg transition-all duration-200 flex items-center justify-center space-x-2">
+            <span>Optimize Profile</span>
+            <ChevronRight className="w-4 h-4" />
+          </button>
         </div>
-        <h3 className="text-lg font-semibold mb-2">Rating</h3>
-        <p className="text-muted-foreground">From 127 reviews</p>
       </div>
     </div>
 
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      <div className="bg-card p-6 rounded-lg shadow-card animate-slide-up">
-        <h3 className="text-xl font-semibold mb-4 flex items-center">
-          <Calendar className="w-6 h-6 mr-2 text-primary" />
-          Recent Activity
-        </h3>
-        <div className="space-y-4">
-          <div className="flex items-center justify-between py-3 border-b border-border">
-            <div>
-              <p className="font-medium">Wedding Reception</p>
-              <p className="text-sm text-muted-foreground">Tomorrow, 6:00 PM</p>
-            </div>
-            <span className="px-3 py-1 bg-success/10 text-success rounded-full text-sm">Confirmed</span>
-          </div>
-          <div className="flex items-center justify-between py-3 border-b border-border">
-            <div>
-              <p className="font-medium">Corporate Event</p>
-              <p className="text-sm text-muted-foreground">Dec 25, 2:00 PM</p>
-            </div>
-            <span className="px-3 py-1 bg-warning/10 text-warning rounded-full text-sm">Pending</span>
-          </div>
+    {/* Bottom row - KPI Cards */}
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="bg-card p-6 rounded-2xl border border-border hover:border-primary/50 transition-all duration-300 animate-slide-up">
+        <div className="flex items-center justify-between mb-4">
+          <DollarSign className="w-8 h-8 text-primary" />
+          <TrendingUp className="w-5 h-5 text-success" />
+        </div>
+        <div className="space-y-1">
+          <p className="text-sm text-muted-foreground">Total Revenue</p>
+          <p className="text-2xl font-bold text-cyan">$12,450</p>
+          <p className="text-xs text-success">+15% from last month</p>
         </div>
       </div>
 
-      <div className="bg-card p-6 rounded-lg shadow-card animate-slide-up delay-100">
-        <h3 className="text-xl font-semibold mb-4 flex items-center">
-          <TrendingUp className="w-6 h-6 mr-2 text-primary" />
-          Performance Stats
-        </h3>
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <span className="text-muted-foreground">Profile Views</span>
-            <span className="font-semibold">1,234</span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-muted-foreground">Booking Rate</span>
-            <span className="font-semibold">85%</span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-muted-foreground">Response Time</span>
-            <span className="font-semibold">2 hours</span>
-          </div>
+      <div className="bg-card p-6 rounded-2xl border border-border hover:border-primary/50 transition-all duration-300 animate-slide-up delay-100">
+        <div className="flex items-center justify-between mb-4">
+          <Star className="w-8 h-8 text-primary" />
+          <Award className="w-5 h-5 text-warning" />
+        </div>
+        <div className="space-y-1">
+          <p className="text-sm text-muted-foreground">Average Rating</p>
+          <p className="text-2xl font-bold text-cyan">4.9</p>
+          <p className="text-xs text-muted-foreground">From 127 reviews</p>
+        </div>
+      </div>
+
+      <div className="bg-card p-6 rounded-2xl border border-border hover:border-primary/50 transition-all duration-300 animate-slide-up delay-200">
+        <div className="flex items-center justify-between mb-4">
+          <Calendar className="w-8 h-8 text-primary" />
+          <TrendingUp className="w-5 h-5 text-success" />
+        </div>
+        <div className="space-y-1">
+          <p className="text-sm text-muted-foreground">Monthly Events</p>
+          <p className="text-2xl font-bold text-cyan">18</p>
+          <p className="text-xs text-success">+3 from last month</p>
+        </div>
+      </div>
+
+      <div className="bg-card p-6 rounded-2xl border border-border hover:border-primary/50 transition-all duration-300 animate-slide-up delay-300">
+        <div className="flex items-center justify-between mb-4">
+          <Users className="w-8 h-8 text-primary" />
+          <Eye className="w-5 h-5 text-primary" />
+        </div>
+        <div className="space-y-1">
+          <p className="text-sm text-muted-foreground">Profile Views</p>
+          <p className="text-2xl font-bold text-cyan">2,341</p>
+          <p className="text-xs text-success">+28% this week</p>
         </div>
       </div>
     </div>
@@ -202,7 +311,7 @@ const ClientDashboard = ({ user }: { user: any }) => (
         </h3>
         <div className="space-y-4">
           <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-gradient-hero rounded-full flex items-center justify-center">
+            <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
               <Music className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -211,7 +320,7 @@ const ClientDashboard = ({ user }: { user: any }) => (
             </div>
           </div>
           <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-gradient-purple rounded-full flex items-center justify-center">
+            <div className="w-12 h-12 bg-secondary rounded-full flex items-center justify-center">
               <Music className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -335,13 +444,14 @@ const Dashboard = () => {
     <div className="min-h-screen bg-background">
       <WelcomeScreen role={user.role || 'guest'} userName={userName} />
       <Navbar />
+      <DashboardNav />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8 animate-fade-in">
-          <h1 className="text-4xl md:text-5xl font-display font-bold mb-2 gradient-hero bg-clip-text text-transparent">
-            Welcome back, {userName}!
+          <h1 className="text-4xl md:text-5xl font-display font-bold mb-2 text-white">
+            Dashboard
           </h1>
-          <p className="text-muted-foreground text-lg">
-            Role: {user.role?.charAt(0).toUpperCase() + user.role?.slice(1)} {user.profile?.is_premium ? '(Premium)' : ''}
+          <p className="text-cyan text-lg">
+            {user.role?.charAt(0).toUpperCase() + user.role?.slice(1)} {user.profile?.is_premium ? '(Premium)' : ''}
           </p>
         </div>
 

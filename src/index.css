@@ -76,18 +76,26 @@
   }
 
   .dark {
-    /* Dark theme with vibrant accents */
-    --background: 220 26% 8%;
+    /* Dark SaaS theme - charcoal black background */
+    --background: 0 0% 7%; /* #121212 */
     --foreground: 0 0% 95%;
     
-    --primary: 175 70% 50%;
+    --primary: 270 82% 60%; /* #8A2BE2 purple/violet */
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 175 80% 60%;
+    --primary-glow: 270 82% 70%;
     
-    --secondary: 260 70% 60%;
+    --secondary: 270 82% 60%;
     --secondary-foreground: 0 0% 100%;
     
-    --card: 220 26% 12%;
+    /* Coral CTA button */
+    --coral: 10 91% 69%; /* #FF6F61 */
+    --coral-foreground: 0 0% 100%;
+    
+    /* Cyan accent */
+    --cyan: 174 72% 56%; /* #40E0D0 */
+    --cyan-foreground: 0 0% 0%;
+    
+    --card: 0 0% 10%; /* Darker cards for SaaS look */
     --card-foreground: 0 0% 95%;
     
     --popover: 220 26% 12%;
