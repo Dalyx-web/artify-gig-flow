@@ -16,6 +16,7 @@ import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import ArtistOnboarding from "./pages/ArtistOnboarding";
 import Messages from "./pages/Messages";
+import ProfileSettings from "./pages/ProfileSettings";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +41,7 @@ const App = () => (
             <Route path="/register" element={<Register />} />
             <Route path="/artist-onboarding" element={<ArtistOnboarding />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/profile-settings" element={<ProfileSettings />} />
             <Route path="/job-board" element={<JobBoard />} />
             <Route path="/messages" element={<Messages />} />
             <Route path="/admin" element={<Admin />} />

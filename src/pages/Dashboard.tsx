@@ -29,7 +29,7 @@ const DashboardSidebar = () => {
   const menuItems = [
     { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
     { icon: Calendar, label: "Bookings", path: "/bookings", badge: 3 },
-    { icon: User, label: "Profile", path: "/artist-profile" },
+    { icon: User, label: "Profile", path: "/profile-settings" },
     { icon: MessageSquare, label: "Messages", path: "/messages", badge: 2 },
     { icon: Briefcase, label: "Job Board", path: "/job-board" },
     { icon: BarChart3, label: "Analytics", path: "/analytics" },
@@ -253,7 +253,7 @@ const ArtistDashboard = () => {
             <Button 
               variant="outline" 
               className="w-full justify-start h-auto py-4"
-              onClick={() => navigate('/artist-profile')}
+              onClick={() => navigate('/profile-settings')}
             >
               <Music className="w-5 h-5 mr-3" />
               <span className="font-medium">Update Portfolio</span>
@@ -323,7 +323,7 @@ export default function Dashboard() {
               <nav className="hidden md:flex items-center gap-6">
                 <a href="/dashboard" className="text-sm font-medium text-foreground hover:text-primary transition-colors">Dashboard</a>
                 <a href="/bookings" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Bookings</a>
-                <a href="/artist-profile" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Profile</a>
+                <a href="/profile-settings" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Profile</a>
                 <a href="/job-board" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Job Board</a>
               </nav>
             </div>
