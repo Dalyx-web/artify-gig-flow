@@ -73,19 +73,19 @@ export const ArtistFilters: React.FC<ArtistFiltersProps> = ({
 
   const clearAllFilters = () => {
     onFiltersChange({
-      category: '',
+      category: 'all',
       location: '',
       minRate: 0,
       maxRate: 1000,
-      availability: '',
+      availability: 'any',
       skills: []
     });
   };
 
   const activeFiltersCount = 
-    (filters.category ? 1 : 0) +
+    (filters.category && filters.category !== 'all' ? 1 : 0) +
     (filters.location ? 1 : 0) +
-    (filters.availability ? 1 : 0) +
+    (filters.availability && filters.availability !== 'any' ? 1 : 0) +
     filters.skills.length +
     (filters.minRate > 0 || filters.maxRate < 1000 ? 1 : 0);
 
@@ -125,7 +125,7 @@ export const ArtistFilters: React.FC<ArtistFiltersProps> = ({
               <SelectValue placeholder="All categories" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All categories</SelectItem>
+              <SelectItem value="all">All categories</SelectItem>
               {categories.map((category) => (
                 <SelectItem key={category.id} value={category.name}>
                   <div className="flex items-center space-x-2">
@@ -188,7 +188,7 @@ export const ArtistFilters: React.FC<ArtistFiltersProps> = ({
               <SelectValue placeholder="Any availability" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Any availability</SelectItem>
+              <SelectItem value="any">Any availability</SelectItem>
               <SelectItem value="available">Available</SelectItem>
               <SelectItem value="busy">Busy</SelectItem>
               <SelectItem value="unavailable">Unavailable</SelectItem>

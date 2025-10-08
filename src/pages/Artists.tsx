@@ -57,11 +57,11 @@ const Artists = () => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState<Filters>({
-    category: '',
+    category: 'all',
     location: '',
     minRate: 0,
     maxRate: 1000,
-    availability: '',
+    availability: 'any',
     skills: [],
     sortBy: 'rating'
   });
@@ -141,7 +141,7 @@ const Artists = () => {
     }
 
     // Apply category filter
-    if (filters.category) {
+    if (filters.category && filters.category !== 'all') {
       filtered = filtered.filter(artist =>
         artist.artist_skills.some(skill =>
           skill.skills.categories.name === filters.category
@@ -163,7 +163,7 @@ const Artists = () => {
     );
 
     // Apply availability filter
-    if (filters.availability) {
+    if (filters.availability && filters.availability !== 'any') {
       filtered = filtered.filter(artist =>
         artist.availability_status === filters.availability
       );
