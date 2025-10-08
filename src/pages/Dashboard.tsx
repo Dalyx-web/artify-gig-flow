@@ -1,466 +1,358 @@
-import React, { useState, useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
-import { Navbar } from '@/components/layout/Navbar';
-import { useAuth } from '@/contexts/AuthContext';
-import { Progress } from '@/components/ui/progress';
-import { 
-  Music, 
-  Calendar, 
-  DollarSign, 
-  Users, 
-  MessageCircle, 
-  Star, 
-  Settings, 
-  TrendingUp, 
-  Award,
-  User,
-  BookOpen,
-  MapPin,
-  Clock,
-  ChevronRight,
-  Eye
-} from 'lucide-react';
+import { useAuth } from "@/contexts/AuthContext";
+import { Navigate, useNavigate } from "react-router-dom";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Calendar, DollarSign, Star, TrendingUp, Users, Clock, Activity, Eye, FileText, Music, CalendarCheck, BarChart3, LayoutDashboard, Briefcase, User, MessageSquare, CreditCard, Settings, Search, Bell } from "lucide-react";
+import { useState } from "react";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarTrigger,
+  useSidebar,
+} from "@/components/ui/sidebar";
 
-// Welcome screen component with role-specific animations
-const WelcomeScreen = ({ role, userName }: { role: string; userName: string }) => {
-  const [show, setShow] = useState(true);
+// Sidebar Navigation Component
+const DashboardSidebar = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { state } = useSidebar();
+  const isCollapsed = state === "collapsed";
 
-  useEffect(() => {
-    const timer = setTimeout(() => setShow(false), 3000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const welcomeMessages = {
-    artist: "🎶 Share your talent. The stage is yours!",
-    client: "Let's find the perfect vibe for your event!",
-    admin: "You're in control. Time to fine-tune the platform."
-  };
-
-  const message = welcomeMessages[role as keyof typeof welcomeMessages] || "🎧 Discover fresh talent near you!";
-
-  if (!show) return null;
-
-  return (
-    <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex items-center justify-center">
-      <div className="text-center animate-scale-in">
-        <div className="mb-8 animate-bounce">
-          <div className="w-24 h-24 mx-auto bg-primary rounded-full flex items-center justify-center shadow-glow">
-            <Music className="w-12 h-12 text-white" />
-          </div>
-        </div>
-        <h1 className="text-4xl md:text-6xl font-display font-bold mb-4 animate-fade-in text-white">
-          Welcome, {userName}!
-        </h1>
-        <p className="text-xl md:text-2xl text-cyan animate-slide-up delay-200">
-          {message}
-        </p>
-      </div>
-    </div>
-  );
-};
-
-// Top Navigation Bar Component
-const DashboardNav = () => {
-  const [activeTab, setActiveTab] = useState('profile');
-  
-  const navItems = [
-    { id: 'profile', label: 'Profile', icon: User },
-    { id: 'calendar', label: 'Calendar', icon: Calendar },
-    { id: 'bookings', label: 'Bookings', icon: BookOpen },
-    { id: 'messages', label: 'Messages', icon: MessageCircle },
-    { id: 'settings', label: 'Settings', icon: Settings },
+  const menuItems = [
+    { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
+    { icon: Calendar, label: "Bookings", path: "/bookings", badge: 3 },
+    { icon: User, label: "Profile", path: "/artist-profile" },
+    { icon: MessageSquare, label: "Messages", path: "/messages", badge: 2 },
+    { icon: Briefcase, label: "Job Board", path: "/job-board" },
+    { icon: BarChart3, label: "Analytics", path: "/analytics" },
+    { icon: Star, label: "Reviews", path: "/reviews" },
+    { icon: CreditCard, label: "Payments", path: "/payments" },
+    { icon: Settings, label: "Settings", path: "/settings" },
   ];
 
   return (
-    <div className="bg-card border-b border-border mb-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex space-x-8">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = activeTab === item.id;
-            return (
-              <button
-                key={item.id}
-                onClick={() => setActiveTab(item.id)}
-                className={`flex items-center space-x-2 py-4 px-4 border-b-2 transition-all duration-200 ${
-                  isActive 
-                    ? 'border-primary bg-primary/10 text-primary' 
-                    : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted'
-                }`}
-              >
-                <Icon className="w-5 h-5" />
-                <span className="font-medium">{item.label}</span>
-              </button>
-            );
-          })}
+    <Sidebar className={isCollapsed ? "w-16" : "w-64"} collapsible="icon">
+      <SidebarContent className="bg-card border-r border-border">
+        <div className="p-4 border-b border-border flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center">
+            <Music className="w-6 h-6 text-white" />
+          </div>
+          {!isCollapsed && <span className="font-bold text-xl">ArtUne</span>}
         </div>
+
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu className="space-y-1 p-2">
+              {menuItems.map((item) => (
+                <SidebarMenuItem key={item.label}>
+                  <SidebarMenuButton
+                    onClick={() => navigate(item.path)}
+                    className="w-full justify-start hover:bg-primary/10 hover:text-primary transition-all rounded-lg"
+                  >
+                    <item.icon className="w-5 h-5" />
+                    {!isCollapsed && (
+                      <>
+                        <span className="flex-1">{item.label}</span>
+                        {item.badge && (
+                          <Badge variant="secondary" className="ml-auto">
+                            {item.badge}
+                          </Badge>
+                        )}
+                      </>
+                    )}
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <div className="mt-auto p-4 border-t border-border">
+          <div className="text-xs text-muted-foreground">
+            {!isCollapsed && (
+              <>
+                <p className="mb-1">Artist Dashboard</p>
+                <p>v1.0.0</p>
+              </>
+            )}
+          </div>
+        </div>
+      </SidebarContent>
+    </Sidebar>
+  );
+};
+
+// KPI Card Component
+const KPICard = ({ 
+  title, 
+  value, 
+  subtitle, 
+  trend, 
+  icon: Icon 
+}: { 
+  title: string; 
+  value: string; 
+  subtitle: string; 
+  trend: string; 
+  icon: any;
+}) => (
+  <Card className="bg-card/50 backdrop-blur-sm border-border hover:border-primary/50 transition-all">
+    <CardHeader className="flex flex-row items-center justify-between pb-2">
+      <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
+      <Icon className="w-5 h-5 text-muted-foreground" />
+    </CardHeader>
+    <CardContent>
+      <div className="text-3xl font-bold text-cyan">{value}</div>
+      <div className="flex items-center gap-2 mt-2">
+        <p className="text-xs text-muted-foreground">{subtitle}</p>
+        <span className="text-xs font-medium text-green-500 flex items-center gap-1">
+          <TrendingUp className="w-3 h-3" />
+          {trend}
+        </span>
+      </div>
+    </CardContent>
+  </Card>
+);
+
+// Artist Dashboard Component
+const ArtistDashboard = () => {
+  const navigate = useNavigate();
+
+  return (
+    <div className="space-y-6">
+      {/* Welcome Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-4xl font-bold mb-2">Welcome back, Alex! 👋</h1>
+          <p className="text-muted-foreground">Here's what's happening with your bookings today.</p>
+        </div>
+        <Button className="bg-primary hover:bg-primary/90">
+          <Calendar className="w-4 h-4 mr-2" />
+          New Booking
+        </Button>
+      </div>
+
+      {/* KPI Cards */}
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <KPICard
+          title="Total Earnings"
+          value="$12,500"
+          subtitle="This month"
+          trend="+12%"
+          icon={DollarSign}
+        />
+        <KPICard
+          title="Upcoming Bookings"
+          value="8"
+          subtitle="Next 30 days"
+          trend="+8%"
+          icon={Calendar}
+        />
+        <KPICard
+          title="Average Rating"
+          value="4.8/5.0"
+          subtitle="Based on reviews"
+          trend="+2%"
+          icon={Star}
+        />
+        <KPICard
+          title="Profile Views"
+          value="1,234"
+          subtitle="This week"
+          trend="+15%"
+          icon={Eye}
+        />
+      </div>
+
+      {/* Main Content Grid */}
+      <div className="grid gap-6 lg:grid-cols-3">
+        {/* Upcoming Events */}
+        <Card className="lg:col-span-2 bg-card/50 backdrop-blur-sm border-border">
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <Calendar className="w-5 h-5 text-primary" />
+              <CardTitle className="text-2xl">Upcoming Events</CardTitle>
+            </div>
+            <CardDescription>Your next bookings and their details</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {/* Event 1 */}
+            <div className="flex items-start justify-between p-4 rounded-lg border border-border hover:border-primary/50 transition-all">
+              <div className="space-y-2 flex-1">
+                <div className="flex items-center gap-3">
+                  <h3 className="font-semibold text-lg">Wedding Reception</h3>
+                  <Badge className="bg-green-500/20 text-green-500 border-green-500/30">confirmed</Badge>
+                </div>
+                <p className="text-sm text-muted-foreground">Client: Sarah & Mike Johnson</p>
+                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                  <span className="flex items-center gap-1">
+                    <Clock className="w-4 h-4" />
+                    2024-01-15 at 18:00
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Users className="w-4 h-4" />
+                    Grand Hotel Ballroom
+                  </span>
+                </div>
+              </div>
+              <div className="text-right space-y-2">
+                <p className="text-2xl font-bold text-cyan">$2,500</p>
+                <Button variant="outline" size="sm">View Details</Button>
+              </div>
+            </div>
+
+            {/* Event 2 */}
+            <div className="flex items-start justify-between p-4 rounded-lg border border-border hover:border-primary/50 transition-all">
+              <div className="space-y-2 flex-1">
+                <div className="flex items-center gap-3">
+                  <h3 className="font-semibold text-lg">Corporate Event</h3>
+                  <Badge className="bg-yellow-500/20 text-yellow-500 border-yellow-500/30">pending</Badge>
+                </div>
+                <p className="text-sm text-muted-foreground">Client: Tech Corporation</p>
+                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                  <span className="flex items-center gap-1">
+                    <Clock className="w-4 h-4" />
+                    2024-01-20 at 19:00
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Users className="w-4 h-4" />
+                    Convention Center
+                  </span>
+                </div>
+              </div>
+              <div className="text-right space-y-2">
+                <p className="text-2xl font-bold text-cyan">$3,200</p>
+                <Button variant="outline" size="sm">View Details</Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Quick Actions */}
+        <Card className="bg-card/50 backdrop-blur-sm border-border">
+          <CardHeader>
+            <CardTitle className="text-2xl">Quick Actions</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <Button 
+              variant="outline" 
+              className="w-full justify-start h-auto py-4"
+              onClick={() => navigate('/quotes')}
+            >
+              <DollarSign className="w-5 h-5 mr-3" />
+              <span className="font-medium">Generate Quote</span>
+            </Button>
+            <Button 
+              variant="outline" 
+              className="w-full justify-start h-auto py-4"
+              onClick={() => navigate('/artist-profile')}
+            >
+              <Music className="w-5 h-5 mr-3" />
+              <span className="font-medium">Update Portfolio</span>
+            </Button>
+            <Button 
+              variant="outline" 
+              className="w-full justify-start h-auto py-4"
+              onClick={() => navigate('/availability')}
+            >
+              <CalendarCheck className="w-5 h-5 mr-3" />
+              <span className="font-medium">Set Availability</span>
+            </Button>
+            <Button 
+              variant="outline" 
+              className="w-full justify-start h-auto py-4"
+              onClick={() => navigate('/analytics')}
+            >
+              <BarChart3 className="w-5 h-5 mr-3" />
+              <span className="font-medium">View Analytics</span>
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
 };
 
-// Artist Dashboard with new SaaS design
-const ArtistDashboard = ({ user }: { user: any }) => (
-  <div className="space-y-8">
-    {/* Top row - Main widgets */}
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      {/* Next Event Widget - Left */}
-      <div className="bg-card p-6 rounded-2xl border border-border hover:border-primary/50 transition-all duration-300 animate-fade-in">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-foreground">Next Event</h3>
-          <Calendar className="w-6 h-6 text-primary" />
-        </div>
-        <div className="space-y-3">
-          <div className="flex items-center text-cyan text-2xl font-bold">
-            Dec 24, 2024
-          </div>
-          <div className="flex items-center space-x-2 text-muted-foreground">
-            <MapPin className="w-4 h-4" />
-            <span>Grand Ballroom, Hotel Plaza</span>
-          </div>
-          <div className="flex items-center space-x-2 text-muted-foreground">
-            <Clock className="w-4 h-4" />
-            <span>8:00 PM - 11:00 PM</span>
-          </div>
-          <div className="flex items-center justify-between pt-2">
-            <span className="text-lg font-semibold text-foreground">$850</span>
-            <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
-              Confirmed
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* Quick Quote Management - Center */}
-      <div className="bg-card p-6 rounded-2xl border border-border hover:border-primary/50 transition-all duration-300 animate-fade-in delay-100">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-foreground">Quick Quote</h3>
-          <MessageCircle className="w-6 h-6 text-primary" />
-        </div>
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <span className="text-muted-foreground">Pending Quotes</span>
-            <span className="text-cyan text-xl font-bold">3</span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-muted-foreground">Response Time</span>
-            <span className="text-foreground font-semibold">&lt; 2 hrs</span>
-          </div>
-          <div className="pt-2">
-            <span className="px-3 py-1 bg-warning/10 text-warning rounded-full text-sm font-medium mb-4 inline-block">
-              2 High Priority
-            </span>
-          </div>
-          <button className="w-full bg-coral hover:bg-coral/90 text-coral-foreground font-semibold py-3 px-4 rounded-xl transition-all duration-200 hover:scale-105">
-            Manage Quotes
-          </button>
-        </div>
-      </div>
-
-      {/* Profile Visibility - Right */}
-      <div className="bg-card p-6 rounded-2xl border border-border hover:border-primary/50 transition-all duration-300 animate-fade-in delay-200">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-foreground">Profile Visibility</h3>
-          <Eye className="w-6 h-6 text-primary" />
-        </div>
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <span className="text-muted-foreground">Completion</span>
-            <span className="text-cyan text-xl font-bold">85%</span>
-          </div>
-          <Progress value={85} className="h-3" />
-          <div className="space-y-2 text-sm">
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">Profile Views</span>
-              <span className="text-foreground font-semibold">1,234</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">Search Ranking</span>
-              <span className="text-foreground font-semibold">#12</span>
-            </div>
-          </div>
-          <button className="w-full bg-primary/10 hover:bg-primary/20 text-primary font-medium py-2 px-4 rounded-lg transition-all duration-200 flex items-center justify-center space-x-2">
-            <span>Optimize Profile</span>
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
-    </div>
-
-    {/* Bottom row - KPI Cards */}
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <div className="bg-card p-6 rounded-2xl border border-border hover:border-primary/50 transition-all duration-300 animate-slide-up">
-        <div className="flex items-center justify-between mb-4">
-          <DollarSign className="w-8 h-8 text-primary" />
-          <TrendingUp className="w-5 h-5 text-success" />
-        </div>
-        <div className="space-y-1">
-          <p className="text-sm text-muted-foreground">Total Revenue</p>
-          <p className="text-2xl font-bold text-cyan">$12,450</p>
-          <p className="text-xs text-success">+15% from last month</p>
-        </div>
-      </div>
-
-      <div className="bg-card p-6 rounded-2xl border border-border hover:border-primary/50 transition-all duration-300 animate-slide-up delay-100">
-        <div className="flex items-center justify-between mb-4">
-          <Star className="w-8 h-8 text-primary" />
-          <Award className="w-5 h-5 text-warning" />
-        </div>
-        <div className="space-y-1">
-          <p className="text-sm text-muted-foreground">Average Rating</p>
-          <p className="text-2xl font-bold text-cyan">4.9</p>
-          <p className="text-xs text-muted-foreground">From 127 reviews</p>
-        </div>
-      </div>
-
-      <div className="bg-card p-6 rounded-2xl border border-border hover:border-primary/50 transition-all duration-300 animate-slide-up delay-200">
-        <div className="flex items-center justify-between mb-4">
-          <Calendar className="w-8 h-8 text-primary" />
-          <TrendingUp className="w-5 h-5 text-success" />
-        </div>
-        <div className="space-y-1">
-          <p className="text-sm text-muted-foreground">Monthly Events</p>
-          <p className="text-2xl font-bold text-cyan">18</p>
-          <p className="text-xs text-success">+3 from last month</p>
-        </div>
-      </div>
-
-      <div className="bg-card p-6 rounded-2xl border border-border hover:border-primary/50 transition-all duration-300 animate-slide-up delay-300">
-        <div className="flex items-center justify-between mb-4">
-          <Users className="w-8 h-8 text-primary" />
-          <Eye className="w-5 h-5 text-primary" />
-        </div>
-        <div className="space-y-1">
-          <p className="text-sm text-muted-foreground">Profile Views</p>
-          <p className="text-2xl font-bold text-cyan">2,341</p>
-          <p className="text-xs text-success">+28% this week</p>
-        </div>
-      </div>
-    </div>
+const ClientDashboard = () => (
+  <div className="space-y-6">
+    <h1 className="text-4xl font-bold mb-2">Client Dashboard</h1>
+    <p className="text-muted-foreground">Find and book the perfect artist for your event.</p>
   </div>
 );
 
-const ClientDashboard = ({ user }: { user: any }) => (
-  <div className="space-y-8">
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <div className="bg-card p-6 rounded-lg shadow-card hover-lift animate-fade-in">
-        <div className="flex items-center justify-between mb-4">
-          <Calendar className="w-8 h-8 text-primary" />
-          <span className="text-2xl font-bold text-primary">2</span>
-        </div>
-        <h3 className="text-lg font-semibold mb-2">Active Bookings</h3>
-        <p className="text-muted-foreground">Next event in 3 days</p>
-      </div>
-      
-      <div className="bg-card p-6 rounded-lg shadow-card hover-lift animate-fade-in delay-100">
-        <div className="flex items-center justify-between mb-4">
-          <Users className="w-8 h-8 text-secondary" />
-          <span className="text-2xl font-bold text-secondary">12</span>
-        </div>
-        <h3 className="text-lg font-semibold mb-2">Saved Artists</h3>
-        <p className="text-muted-foreground">In 3 categories</p>
-      </div>
-      
-      <div className="bg-card p-6 rounded-lg shadow-card hover-lift animate-fade-in delay-200">
-        <div className="flex items-center justify-between mb-4">
-          <DollarSign className="w-8 h-8 text-success" />
-          <span className="text-2xl font-bold text-success">$1,200</span>
-        </div>
-        <h3 className="text-lg font-semibold mb-2">Total Spent</h3>
-        <p className="text-muted-foreground">Last 6 months</p>
-      </div>
-      
-      <div className="bg-card p-6 rounded-lg shadow-card hover-lift animate-fade-in delay-300">
-        <div className="flex items-center justify-between mb-4">
-          <Award className="w-8 h-8 text-warning" />
-          <span className="text-2xl font-bold">8</span>
-        </div>
-        <h3 className="text-lg font-semibold mb-2">Events Hosted</h3>
-        <p className="text-muted-foreground">This year</p>
-      </div>
-    </div>
-
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      <div className="bg-card p-6 rounded-lg shadow-card animate-slide-up">
-        <h3 className="text-xl font-semibold mb-4 flex items-center">
-          <Calendar className="w-6 h-6 mr-2 text-primary" />
-          Upcoming Events
-        </h3>
-        <div className="space-y-4">
-          <div className="flex items-center justify-between py-3 border-b border-border">
-            <div>
-              <p className="font-medium">Anniversary Party</p>
-              <p className="text-sm text-muted-foreground">Dec 22, 7:00 PM - Jazz Quartet</p>
-            </div>
-            <span className="px-3 py-1 bg-success/10 text-success rounded-full text-sm">Confirmed</span>
-          </div>
-          <div className="flex items-center justify-between py-3 border-b border-border">
-            <div>
-              <p className="font-medium">New Year's Gala</p>
-              <p className="text-sm text-muted-foreground">Dec 31, 9:00 PM - Live Band</p>
-            </div>
-            <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">In Progress</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-card p-6 rounded-lg shadow-card animate-slide-up delay-100">
-        <h3 className="text-xl font-semibold mb-4 flex items-center">
-          <Star className="w-6 h-6 mr-2 text-primary" />
-          Recommended Artists
-        </h3>
-        <div className="space-y-4">
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
-              <Music className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <p className="font-medium">Sarah Johnson</p>
-              <p className="text-sm text-muted-foreground">Jazz Vocalist • 4.9★</p>
-            </div>
-          </div>
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-secondary rounded-full flex items-center justify-center">
-              <Music className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <p className="font-medium">The Rhythm Kings</p>
-              <p className="text-sm text-muted-foreground">Cover Band • 4.8★</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+const AdminDashboard = () => (
+  <div className="space-y-6">
+    <h1 className="text-4xl font-bold mb-2">Admin Dashboard</h1>
+    <p className="text-muted-foreground">Manage users, bookings, and platform settings.</p>
   </div>
 );
 
-const AdminDashboard = ({ user }: { user: any }) => (
-  <div className="space-y-8">
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <div className="bg-card p-6 rounded-lg shadow-card hover-lift animate-fade-in">
-        <div className="flex items-center justify-between mb-4">
-          <Users className="w-8 h-8 text-primary" />
-          <span className="text-2xl font-bold text-primary">1,234</span>
-        </div>
-        <h3 className="text-lg font-semibold mb-2">Total Users</h3>
-        <p className="text-muted-foreground">+12% this month</p>
-      </div>
-      
-      <div className="bg-card p-6 rounded-lg shadow-card hover-lift animate-fade-in delay-100">
-        <div className="flex items-center justify-between mb-4">
-          <Calendar className="w-8 h-8 text-secondary" />
-          <span className="text-2xl font-bold text-secondary">89</span>
-        </div>
-        <h3 className="text-lg font-semibold mb-2">Active Bookings</h3>
-        <p className="text-muted-foreground">Platform-wide</p>
-      </div>
-      
-      <div className="bg-card p-6 rounded-lg shadow-card hover-lift animate-fade-in delay-200">
-        <div className="flex items-center justify-between mb-4">
-          <DollarSign className="w-8 h-8 text-success" />
-          <span className="text-2xl font-bold text-success">$45,200</span>
-        </div>
-        <h3 className="text-lg font-semibold mb-2">Revenue</h3>
-        <p className="text-muted-foreground">This month</p>
-      </div>
-      
-      <div className="bg-card p-6 rounded-lg shadow-card hover-lift animate-fade-in delay-300">
-        <div className="flex items-center justify-between mb-4">
-          <TrendingUp className="w-8 h-8 text-warning" />
-          <span className="text-2xl font-bold">94%</span>
-        </div>
-        <h3 className="text-lg font-semibold mb-2">Satisfaction</h3>
-        <p className="text-muted-foreground">User rating</p>
-      </div>
-    </div>
-
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      <div className="bg-card p-6 rounded-lg shadow-card animate-slide-up">
-        <h3 className="text-xl font-semibold mb-4 flex items-center">
-          <Settings className="w-6 h-6 mr-2 text-primary" />
-          Platform Overview
-        </h3>
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <span className="text-muted-foreground">Artists</span>
-            <span className="font-semibold">456</span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-muted-foreground">Clients</span>
-            <span className="font-semibold">778</span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-muted-foreground">Success Rate</span>
-            <span className="font-semibold">92%</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-card p-6 rounded-lg shadow-card animate-slide-up delay-100">
-        <h3 className="text-xl font-semibold mb-4 flex items-center">
-          <MessageCircle className="w-6 h-6 mr-2 text-primary" />
-          Recent Activity
-        </h3>
-        <div className="space-y-4">
-          <div className="flex items-center justify-between py-3 border-b border-border">
-            <div>
-              <p className="font-medium">New artist registration</p>
-              <p className="text-sm text-muted-foreground">2 minutes ago</p>
-            </div>
-          </div>
-          <div className="flex items-center justify-between py-3 border-b border-border">
-            <div>
-              <p className="font-medium">Booking completed</p>
-              <p className="text-sm text-muted-foreground">15 minutes ago</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-);
-
-const Dashboard = () => {
+// Main Dashboard Component
+export default function Dashboard() {
   const { user, loading } = useAuth();
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading...</p>
-        </div>
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   if (!user) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" />;
   }
 
-  const userName = user.profile?.full_name || user.email?.split('@')[0] || 'User';
-
   return (
-    <div className="min-h-screen bg-background">
-      <WelcomeScreen role={user.role || 'guest'} userName={userName} />
-      <Navbar />
-      <DashboardNav />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8 animate-fade-in">
-          <h1 className="text-4xl md:text-5xl font-display font-bold mb-2 text-white">
-            Dashboard
-          </h1>
-          <p className="text-cyan text-lg">
-            {user.role?.charAt(0).toUpperCase() + user.role?.slice(1)} {user.profile?.is_premium ? '(Premium)' : ''}
-          </p>
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full bg-background">
+        <DashboardSidebar />
+        
+        <div className="flex-1 flex flex-col">
+          <header className="h-16 border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-40 flex items-center justify-between px-6">
+            <div className="flex items-center gap-4">
+              <SidebarTrigger />
+              <nav className="hidden md:flex items-center gap-6">
+                <a href="/dashboard" className="text-sm font-medium text-foreground hover:text-primary transition-colors">Dashboard</a>
+                <a href="/bookings" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Bookings</a>
+                <a href="/artist-profile" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Profile</a>
+                <a href="/job-board" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Job Board</a>
+              </nav>
+            </div>
+            <div className="flex items-center gap-4">
+              <Button variant="ghost" size="icon">
+                <Search className="w-5 h-5" />
+              </Button>
+              <div className="relative">
+                <Button variant="ghost" size="icon">
+                  <Bell className="w-5 h-5" />
+                </Button>
+                <Badge className="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center p-0 bg-coral border-0 text-xs">
+                  2
+                </Badge>
+              </div>
+              <div className="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center text-white font-bold">
+                {user.profile?.full_name?.charAt(0) || user.email?.charAt(0) || 'A'}
+              </div>
+            </div>
+          </header>
+
+          <main className="flex-1 p-6 overflow-auto">
+            {user.role === 'artist' && <ArtistDashboard />}
+            {user.role === 'client' && <ClientDashboard />}
+            {user.role === 'admin' && <AdminDashboard />}
+          </main>
         </div>
-
-        {user.role === 'artist' && <ArtistDashboard user={user} />}
-        {user.role === 'client' && <ClientDashboard user={user} />}
-        {user.role === 'admin' && <AdminDashboard user={user} />}
       </div>
-    </div>
+    </SidebarProvider>
   );
-};
+}
 
-export default Dashboard;
