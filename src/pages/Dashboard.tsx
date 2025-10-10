@@ -1,11 +1,10 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, DollarSign, Star, TrendingUp, Users, Clock, Activity, Eye, FileText, Music, CalendarCheck, BarChart3, LayoutDashboard, Briefcase, User, MessageSquare, CreditCard, Settings, Search, Bell } from "lucide-react";
-import { useState } from "react";
+import { QuickStats } from "@/components/dashboard/QuickStats";
+import { Calendar, Users, Clock, Music, CalendarCheck, BarChart3, LayoutDashboard, Briefcase, User, MessageSquare, CreditCard, Settings, Search, Bell, DollarSign, Star } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -90,37 +89,6 @@ const DashboardSidebar = () => {
   );
 };
 
-// KPI Card Component
-const KPICard = ({ 
-  title, 
-  value, 
-  subtitle, 
-  trend, 
-  icon: Icon 
-}: { 
-  title: string; 
-  value: string; 
-  subtitle: string; 
-  trend: string; 
-  icon: any;
-}) => (
-  <Card className="bg-card/50 backdrop-blur-sm border-border hover:border-primary/50 transition-all">
-    <CardHeader className="flex flex-row items-center justify-between pb-2">
-      <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
-      <Icon className="w-5 h-5 text-muted-foreground" />
-    </CardHeader>
-    <CardContent>
-      <div className="text-3xl font-bold text-cyan">{value}</div>
-      <div className="flex items-center gap-2 mt-2">
-        <p className="text-xs text-muted-foreground">{subtitle}</p>
-        <span className="text-xs font-medium text-green-500 flex items-center gap-1">
-          <TrendingUp className="w-3 h-3" />
-          {trend}
-        </span>
-      </div>
-    </CardContent>
-  </Card>
-);
 
 // Artist Dashboard Component
 const ArtistDashboard = () => {
@@ -140,37 +108,15 @@ const ArtistDashboard = () => {
         </Button>
       </div>
 
-      {/* KPI Cards */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <KPICard
-          title="Total Earnings"
-          value="$12,500"
-          subtitle="This month"
-          trend="+12%"
-          icon={DollarSign}
-        />
-        <KPICard
-          title="Upcoming Bookings"
-          value="8"
-          subtitle="Next 30 days"
-          trend="+8%"
-          icon={Calendar}
-        />
-        <KPICard
-          title="Average Rating"
-          value="4.8/5.0"
-          subtitle="Based on reviews"
-          trend="+2%"
-          icon={Star}
-        />
-        <KPICard
-          title="Profile Views"
-          value="1,234"
-          subtitle="This week"
-          trend="+15%"
-          icon={Eye}
-        />
-      </div>
+      {/* Quick Stats */}
+      <QuickStats 
+        userRole="artist"
+        data={{
+          totalEarnings: 12500,
+          upcomingBookings: 8,
+          rating: 4.8,
+        }}
+      />
 
       {/* Main Content Grid */}
       <div className="grid gap-6 lg:grid-cols-3">
@@ -283,15 +229,43 @@ const ArtistDashboard = () => {
 
 const ClientDashboard = () => (
   <div className="space-y-6">
-    <h1 className="text-4xl font-bold mb-2">Client Dashboard</h1>
-    <p className="text-muted-foreground">Find and book the perfect artist for your event.</p>
+    <div className="flex items-center justify-between">
+      <div>
+        <h1 className="text-4xl font-bold mb-2">Welcome back! 👋</h1>
+        <p className="text-muted-foreground">Find and book the perfect artist for your event.</p>
+      </div>
+    </div>
+    
+    <QuickStats 
+      userRole="client"
+      data={{
+        totalSpent: 8500,
+        totalBookings: 12,
+        favoriteArtists: 5,
+        upcomingBookings: 3,
+      }}
+    />
   </div>
 );
 
 const AdminDashboard = () => (
   <div className="space-y-6">
-    <h1 className="text-4xl font-bold mb-2">Admin Dashboard</h1>
-    <p className="text-muted-foreground">Manage users, bookings, and platform settings.</p>
+    <div className="flex items-center justify-between">
+      <div>
+        <h1 className="text-4xl font-bold mb-2">Admin Dashboard</h1>
+        <p className="text-muted-foreground">Manage users, bookings, and platform settings.</p>
+      </div>
+    </div>
+    
+    <QuickStats 
+      userRole="admin"
+      data={{
+        totalUsers: 1234,
+        activeDisputes: 3,
+        completedBookings: 156,
+        pendingApprovals: 8,
+      }}
+    />
   </div>
 );
 
