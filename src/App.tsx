@@ -19,6 +19,7 @@ import Messages from "./pages/Messages";
 import ProfileSettings from "./pages/ProfileSettings";
 import Analytics from "./pages/Analytics";
 import Bookings from "./pages/Bookings";
+import Payments from "./pages/Payments";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +49,7 @@ const App = () => (
             <Route path="/messages" element={<Messages />} />
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/bookings" element={<Bookings />} />
+            <Route path="/payments" element={<Payments />} />
             <Route path="/admin" element={<Admin />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
