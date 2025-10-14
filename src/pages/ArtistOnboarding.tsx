@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -9,10 +9,15 @@ import { BasicInfoForm } from '@/components/onboarding/BasicInfoForm';
 import { ArtisticProfileForm } from '@/components/onboarding/ArtisticProfileForm';
 import { SocialLinksForm } from '@/components/onboarding/SocialLinksForm';
 import { PricingForm } from '@/components/onboarding/PricingForm';
-import { Card } from '@/components/ui/card';
+import { ArchetypeSelector } from '@/components/onboarding/ArchetypeSelector';
+import { ProfileScoreIndicator } from '@/components/onboarding/ProfileScoreIndicator';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { ArrowLeft, ArrowRight, Check, Globe, Sparkles } from 'lucide-react';
+import { ArtistArchetype } from '@/hooks/use-artist-archetypes';
+import { UAE_CONFIG } from '@/lib/uae-locale';
 
 interface FormData {
   // Basic Info
@@ -48,10 +53,11 @@ interface FormData {
 }
 
 const steps = [
-  { id: 1, title: 'Información Básica', description: 'Cuéntanos sobre ti' },
-  { id: 2, title: 'Perfil Artístico', description: 'Tu especialidad y experiencia' },
-  { id: 3, title: 'Redes Sociales', description: 'Conecta tus perfiles' },
-  { id: 4, title: 'Precios', description: 'Define tus tarifas' }
+  { id: 1, title: 'Artist Type', title_ar: 'نوع الفنان', description: 'Select your category', description_ar: 'اختر فئتك' },
+  { id: 2, title: 'Basic Info', title_ar: 'المعلومات الأساسية', description: 'Tell us about yourself', description_ar: 'أخبرنا عن نفسك' },
+  { id: 3, title: 'Artistic Profile', title_ar: 'الملف الفني', description: 'Your specialty & experience', description_ar: 'تخصصك وخبرتك' },
+  { id: 4, title: 'Social Links', title_ar: 'الروابط الاجتماعية', description: 'Connect your profiles', description_ar: 'اربط ملفاتك الشخصية' },
+  { id: 5, title: 'Pricing', title_ar: 'التسعير', description: 'Set your rates', description_ar: 'حدد أسعارك' }
 ];
 
 const ArtistOnboarding = () => {
@@ -60,6 +66,9 @@ const ArtistOnboarding = () => {
   const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedArchetype, setSelectedArchetype] = useState<ArtistArchetype | null>(null);
+  const [artistProfileId, setArtistProfileId] = useState<string | undefined>(undefined);
+  const [language, setLanguage] = useState<'en' | 'ar'>('en');
   
   const [formData, setFormData] = useState<FormData>({
     artistic_name: '',
@@ -85,6 +94,33 @@ const ArtistOnboarding = () => {
     travel_distance: 'local'
   });
 
+  // Check if user already has an artist profile
+  useEffect(() => {
+    checkExistingProfile();
+  }, [user]);
+
+  const checkExistingProfile = async () => {
+    if (!user) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('artist_profiles')
+        .select('id, archetype_id, is_published')
+        .eq('user_id', user.id)
+        .single();
+
+      if (data) {
+        setArtistProfileId(data.id);
+        if (data.is_published) {
+          // Profile already complete, redirect to dashboard
+          navigate('/dashboard');
+        }
+      }
+    } catch (error) {
+      console.error('Error checking profile:', error);
+    }
+  };
+
   if (!user) {
     navigate('/login');
     return null;
@@ -97,6 +133,18 @@ const ArtistOnboarding = () => {
   const validateCurrentStep = () => {
     switch (currentStep) {
       case 1:
+        if (!selectedArchetype) {
+          toast({
+            title: language === 'ar' ? 'خطأ' : 'Error',
+            description: language === 'ar' 
+              ? 'الرجاء اختيار نوع الفنان'
+              : 'Please select an artist type',
+            variant: 'destructive'
+          });
+          return false;
+        }
+        return true;
+      case 2:
         if (!formData.artistic_name.trim() || !formData.bio.trim() || !formData.location.trim()) {
           toast({
             title: "Campos requeridos",

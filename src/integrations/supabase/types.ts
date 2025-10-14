@@ -7,27 +7,271 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.12 (cd3cf9e)"
   }
   public: {
     Tables: {
+      archetype_field_visibility: {
+        Row: {
+          archetype_id: string
+          created_at: string | null
+          field_id: string
+          id: string
+          is_required_override: boolean | null
+        }
+        Insert: {
+          archetype_id: string
+          created_at?: string | null
+          field_id: string
+          id?: string
+          is_required_override?: boolean | null
+        }
+        Update: {
+          archetype_id?: string
+          created_at?: string | null
+          field_id?: string
+          id?: string
+          is_required_override?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "archetype_field_visibility_archetype_id_fkey"
+            columns: ["archetype_id"]
+            isOneToOne: false
+            referencedRelation: "artist_archetypes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "archetype_field_visibility_field_id_fkey"
+            columns: ["field_id"]
+            isOneToOne: false
+            referencedRelation: "form_fields"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      artist_archetypes: {
+        Row: {
+          color: string | null
+          created_at: string | null
+          description: string | null
+          description_ar: string | null
+          display_order: number | null
+          icon: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          name_ar: string | null
+          parent_archetype_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string | null
+          description?: string | null
+          description_ar?: string | null
+          display_order?: number | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          name_ar?: string | null
+          parent_archetype_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          color?: string | null
+          created_at?: string | null
+          description?: string | null
+          description_ar?: string | null
+          display_order?: number | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          name_ar?: string | null
+          parent_archetype_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "artist_archetypes_parent_archetype_id_fkey"
+            columns: ["parent_archetype_id"]
+            isOneToOne: false
+            referencedRelation: "artist_archetypes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      artist_availability_slots: {
+        Row: {
+          artist_profile_id: string
+          created_at: string | null
+          day_of_week: number
+          end_time: string
+          id: string
+          is_available: boolean | null
+          start_time: string
+          timezone: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          artist_profile_id: string
+          created_at?: string | null
+          day_of_week: number
+          end_time: string
+          id?: string
+          is_available?: boolean | null
+          start_time: string
+          timezone?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          artist_profile_id?: string
+          created_at?: string | null
+          day_of_week?: number
+          end_time?: string
+          id?: string
+          is_available?: boolean | null
+          start_time?: string
+          timezone?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "artist_availability_slots_artist_profile_id_fkey"
+            columns: ["artist_profile_id"]
+            isOneToOne: false
+            referencedRelation: "artist_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      artist_pricing_packages: {
+        Row: {
+          artist_profile_id: string
+          created_at: string | null
+          currency: string | null
+          description: string | null
+          description_ar: string | null
+          display_order: number | null
+          duration_hours: number | null
+          id: string
+          includes: Json | null
+          includes_ar: Json | null
+          is_active: boolean | null
+          is_featured: boolean | null
+          package_name: string
+          package_name_ar: string | null
+          price_amount: number
+          updated_at: string | null
+        }
+        Insert: {
+          artist_profile_id: string
+          created_at?: string | null
+          currency?: string | null
+          description?: string | null
+          description_ar?: string | null
+          display_order?: number | null
+          duration_hours?: number | null
+          id?: string
+          includes?: Json | null
+          includes_ar?: Json | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          package_name: string
+          package_name_ar?: string | null
+          price_amount: number
+          updated_at?: string | null
+        }
+        Update: {
+          artist_profile_id?: string
+          created_at?: string | null
+          currency?: string | null
+          description?: string | null
+          description_ar?: string | null
+          display_order?: number | null
+          duration_hours?: number | null
+          id?: string
+          includes?: Json | null
+          includes_ar?: Json | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          package_name?: string
+          package_name_ar?: string | null
+          price_amount?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "artist_pricing_packages_artist_profile_id_fkey"
+            columns: ["artist_profile_id"]
+            isOneToOne: false
+            referencedRelation: "artist_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      artist_profile_tags: {
+        Row: {
+          artist_profile_id: string
+          created_at: string | null
+          id: string
+          tag_id: string
+        }
+        Insert: {
+          artist_profile_id: string
+          created_at?: string | null
+          id?: string
+          tag_id: string
+        }
+        Update: {
+          artist_profile_id?: string
+          created_at?: string | null
+          id?: string
+          tag_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "artist_profile_tags_artist_profile_id_fkey"
+            columns: ["artist_profile_id"]
+            isOneToOne: false
+            referencedRelation: "artist_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "artist_profile_tags_tag_id_fkey"
+            columns: ["tag_id"]
+            isOneToOne: false
+            referencedRelation: "artist_tags"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       artist_profiles: {
         Row: {
+          archetype_id: string | null
           artistic_name: string | null
           availability_status: string | null
           bio: string | null
           created_at: string
+          currency: string | null
           experience_years: number | null
           featured: boolean | null
           hourly_rate: number | null
           id: string
+          is_published: boolean | null
           location: string | null
           portfolio_url: string | null
+          preferred_language: string | null
+          profile_score: number | null
           rating: number | null
           response_time_hours: number | null
+          schema_version: number | null
+          timezone: string | null
           total_bookings: number | null
           total_reviews: number | null
           updated_at: string
@@ -35,18 +279,25 @@ export type Database = {
           verified: boolean | null
         }
         Insert: {
+          archetype_id?: string | null
           artistic_name?: string | null
           availability_status?: string | null
           bio?: string | null
           created_at?: string
+          currency?: string | null
           experience_years?: number | null
           featured?: boolean | null
           hourly_rate?: number | null
           id?: string
+          is_published?: boolean | null
           location?: string | null
           portfolio_url?: string | null
+          preferred_language?: string | null
+          profile_score?: number | null
           rating?: number | null
           response_time_hours?: number | null
+          schema_version?: number | null
+          timezone?: string | null
           total_bookings?: number | null
           total_reviews?: number | null
           updated_at?: string
@@ -54,18 +305,25 @@ export type Database = {
           verified?: boolean | null
         }
         Update: {
+          archetype_id?: string | null
           artistic_name?: string | null
           availability_status?: string | null
           bio?: string | null
           created_at?: string
+          currency?: string | null
           experience_years?: number | null
           featured?: boolean | null
           hourly_rate?: number | null
           id?: string
+          is_published?: boolean | null
           location?: string | null
           portfolio_url?: string | null
+          preferred_language?: string | null
+          profile_score?: number | null
           rating?: number | null
           response_time_hours?: number | null
+          schema_version?: number | null
+          timezone?: string | null
           total_bookings?: number | null
           total_reviews?: number | null
           updated_at?: string
@@ -73,6 +331,13 @@ export type Database = {
           verified?: boolean | null
         }
         Relationships: [
+          {
+            foreignKeyName: "artist_profiles_archetype_id_fkey"
+            columns: ["archetype_id"]
+            isOneToOne: false
+            referencedRelation: "artist_archetypes"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "artist_profiles_user_id_fkey"
             columns: ["user_id"]
@@ -117,6 +382,89 @@ export type Database = {
             columns: ["skill_id"]
             isOneToOne: false
             referencedRelation: "skills"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      artist_tags: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          id: string
+          is_approved: boolean | null
+          tag_name: string
+          tag_name_ar: string | null
+          usage_count: number | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          id?: string
+          is_approved?: boolean | null
+          tag_name: string
+          tag_name_ar?: string | null
+          usage_count?: number | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          id?: string
+          is_approved?: boolean | null
+          tag_name?: string
+          tag_name_ar?: string | null
+          usage_count?: number | null
+        }
+        Relationships: []
+      }
+      artist_technical_rider: {
+        Row: {
+          artist_profile_id: string
+          breakdown_time_minutes: number | null
+          created_at: string | null
+          equipment_needed: Json | null
+          equipment_provided: Json | null
+          id: string
+          lighting_requirements: string | null
+          setup_time_minutes: number | null
+          sound_requirements: string | null
+          special_requirements: string | null
+          stage_requirements: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          artist_profile_id: string
+          breakdown_time_minutes?: number | null
+          created_at?: string | null
+          equipment_needed?: Json | null
+          equipment_provided?: Json | null
+          id?: string
+          lighting_requirements?: string | null
+          setup_time_minutes?: number | null
+          sound_requirements?: string | null
+          special_requirements?: string | null
+          stage_requirements?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          artist_profile_id?: string
+          breakdown_time_minutes?: number | null
+          created_at?: string | null
+          equipment_needed?: Json | null
+          equipment_provided?: Json | null
+          id?: string
+          lighting_requirements?: string | null
+          setup_time_minutes?: number | null
+          sound_requirements?: string | null
+          special_requirements?: string | null
+          stage_requirements?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "artist_technical_rider_artist_profile_id_fkey"
+            columns: ["artist_profile_id"]
+            isOneToOne: true
+            referencedRelation: "artist_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -268,6 +616,66 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      form_fields: {
+        Row: {
+          created_at: string | null
+          display_order: number | null
+          field_key: string
+          field_options: Json | null
+          field_type: string
+          help_text: string | null
+          help_text_ar: string | null
+          id: string
+          is_required: boolean | null
+          label: string
+          label_ar: string | null
+          placeholder: string | null
+          placeholder_ar: string | null
+          section: string
+          updated_at: string | null
+          validation_rules: Json | null
+          weight_for_completeness: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          display_order?: number | null
+          field_key: string
+          field_options?: Json | null
+          field_type: string
+          help_text?: string | null
+          help_text_ar?: string | null
+          id?: string
+          is_required?: boolean | null
+          label: string
+          label_ar?: string | null
+          placeholder?: string | null
+          placeholder_ar?: string | null
+          section: string
+          updated_at?: string | null
+          validation_rules?: Json | null
+          weight_for_completeness?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          display_order?: number | null
+          field_key?: string
+          field_options?: Json | null
+          field_type?: string
+          help_text?: string | null
+          help_text_ar?: string | null
+          id?: string
+          is_required?: boolean | null
+          label?: string
+          label_ar?: string | null
+          placeholder?: string | null
+          placeholder_ar?: string | null
+          section?: string
+          updated_at?: string | null
+          validation_rules?: Json | null
+          weight_for_completeness?: number | null
+        }
+        Relationships: []
       }
       message_infractions: {
         Row: {
@@ -735,8 +1143,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      calculate_profile_score: {
+        Args: { profile_id: string }
+        Returns: number
+      }
       increment_user_strikes: {
         Args: { target_user_id: string }
+        Returns: undefined
+      }
+      promote_user_to_admin: {
+        Args: { user_email: string }
         Returns: undefined
       }
     }
