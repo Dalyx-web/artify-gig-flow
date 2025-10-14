@@ -17,6 +17,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { MetricCard } from '@/components/ui/metric-card';
+import { ActivityFeed } from '@/components/dashboard/ActivityFeed';
+import { LiveIndicator } from '@/components/dashboard/LiveIndicator';
+import { useDashboardData } from '@/hooks/use-dashboard-data';
 import { useToast } from '@/hooks/use-toast';
 import { 
   Shield, 
@@ -40,7 +43,8 @@ import {
   BarChart3,
   Server,
   Zap,
-  FileText
+  FileText,
+  RefreshCw
 } from 'lucide-react';
 
 interface AdminStats {
@@ -89,24 +93,13 @@ const Admin = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [userFilter, setUserFilter] = useState('all');
   
-  // Mock data - replace with real API calls
-  const [stats, setStats] = useState<AdminStats>({
-    totalUsers: 1248,
-    artistsCount: 432,
-    clientsCount: 816,
-    activeBookings: 87,
-    completedBookings: 1563,
-    totalRevenue: '$284,500',
-    activeDisputes: 3,
-    newUsersThisMonth: 156,
-    totalTransactions: 2847,
-    globalRating: 4.7,
-    escrowBalance: '$45,800'
-  });
+  // Use real-time dashboard data hook
+  const { stats, recentActivity, loading: dataLoading, lastUpdate, refetch } = useDashboardData('admin');
+  
+  // Stats now come from useDashboardData hook
 
   const [users, setUsers] = useState<UserData[]>([
     {
@@ -176,39 +169,11 @@ const Admin = () => {
     }
   ]);
 
-  useEffect(() => {
-    if (user && user.profile?.user_type === 'admin') {
-      fetchData();
-    }
-  }, [user]);
+  // All data fetching now handled by useDashboardData hook
 
-  const fetchData = async () => {
-    try {
-      // Fetch real data from Supabase
-      const { data: usersData } = await supabase
-        .from('profiles')
-        .select('*')
-        .limit(50);
+  // Mock user data for UI (this will be replaced by real Supabase queries in useDashboardData)
 
-      const { data: bookingsData } = await supabase
-        .from('bookings')
-        .select('*')
-        .limit(50);
-
-      // Transform data as needed
-      setIsLoading(false);
-    } catch (error) {
-      console.error('Error fetching admin data:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load dashboard data",
-        variant: "destructive"
-      });
-      setIsLoading(false);
-    }
-  };
-
-  if (loading || isLoading) {
+  if (loading || dataLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -259,51 +224,62 @@ const Admin = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header Section */}
         <div className="flex items-center justify-between mb-8">
-          <div>
-            <div className="flex items-center gap-3 mb-2">
-              <Shield className="w-8 h-8 text-[#9B5DE5]" />
-              <h1 className="text-4xl font-bold text-white">Admin Dashboard</h1>
+          <div className="flex items-center gap-4">
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <Shield className="w-8 h-8 text-[#9B5DE5]" />
+                <h1 className="text-4xl font-bold text-white">Admin Dashboard</h1>
+              </div>
+              <p className="text-gray-400">Platform overview and management tools.</p>
             </div>
-            <p className="text-gray-400">Platform overview and management tools.</p>
+            <LiveIndicator lastUpdate={lastUpdate} />
           </div>
-          <Button 
-            onClick={() => navigate('/analytics')}
-            className="bg-[#9B5DE5] hover:bg-[#7B3DC5] text-white"
-          >
-            <BarChart3 className="w-4 h-4 mr-2" />
-            View Analytics
-          </Button>
+          <div className="flex gap-2">
+            <Button 
+              onClick={refetch}
+              variant="outline"
+              size="sm"
+              className="border-[#9B5DE5]/30 text-white"
+            >
+              <RefreshCw className="w-4 h-4 mr-2" />
+              Refresh
+            </Button>
+            <Button 
+              onClick={() => navigate('/analytics')}
+              className="bg-[#9B5DE5] hover:bg-[#7B3DC5] text-white"
+            >
+              <BarChart3 className="w-4 h-4 mr-2" />
+              View Analytics
+            </Button>
+          </div>
         </div>
 
         {/* Top Metric Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <MetricCard
             title="Total Users"
-            value={stats.totalUsers}
-            description={`${stats.artistsCount} artists, ${stats.clientsCount} clients`}
+            value={stats?.totalUsers || 0}
+            description={`${stats?.artistsCount || 0} artists, ${stats?.clientsCount || 0} clients`}
             icon={Users}
-            trend={{ value: 12.5, isPositive: true }}
             className="bg-[#1A1A24] border-[#9B5DE5]/20 hover-lift"
           />
           <MetricCard
             title="Active Bookings"
-            value={stats.activeBookings}
-            description={`${stats.completedBookings} completed`}
+            value={stats?.activeBookings || 0}
+            description={`${stats?.completedBookings || 0} completed`}
             icon={Calendar}
-            trend={{ value: 8.3, isPositive: true }}
             className="bg-[#1A1A24] border-[#9B5DE5]/20 hover-lift"
           />
           <MetricCard
             title="Total Revenue"
-            value={stats.totalRevenue}
+            value={stats?.totalRevenue || 'AED 0'}
             description="Platform fees collected"
             icon={DollarSign}
-            trend={{ value: 15.2, isPositive: true }}
             className="bg-[#1A1A24] border-[#9B5DE5]/20 hover-lift"
           />
           <MetricCard
             title="Active Disputes"
-            value={stats.activeDisputes}
+            value={stats?.activeDisputes || 0}
             description="Requiring attention"
             icon={AlertTriangle}
             className="bg-[#1A1A24] border-amber-500/20 hover-lift"
