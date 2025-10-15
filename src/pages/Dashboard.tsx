@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { QuickStats } from "@/components/dashboard/QuickStats";
+import { ClientDashboard } from '@/components/client/ClientDashboard';
 import { Calendar, Users, Clock, Music, CalendarCheck, BarChart3, LayoutDashboard, Briefcase, User, MessageSquare, CreditCard, Settings, Search, Bell, DollarSign, Star } from "lucide-react";
 import {
   Sidebar,
@@ -227,26 +228,7 @@ const ArtistDashboard = () => {
   );
 };
 
-const ClientDashboard = () => (
-  <div className="space-y-6">
-    <div className="flex items-center justify-between">
-      <div>
-        <h1 className="text-4xl font-bold mb-2">Welcome back! 👋</h1>
-        <p className="text-muted-foreground">Find and book the perfect artist for your event.</p>
-      </div>
-    </div>
-    
-    <QuickStats 
-      userRole="client"
-      data={{
-        totalSpent: 8500,
-        totalBookings: 12,
-        favoriteArtists: 5,
-        upcomingBookings: 3,
-      }}
-    />
-  </div>
-);
+// ClientDashboard is imported from @/components/client/ClientDashboard
 
 const AdminDashboard = () => (
   <div className="space-y-6">

@@ -13,16 +13,18 @@ import {
 interface QuickStatsProps {
   userRole: 'artist' | 'client' | 'admin';
   data?: {
-    totalEarnings?: number;
+    totalEarnings?: number | string;
     upcomingBookings?: number;
     rating?: number;
     totalBookings?: number;
-    totalSpent?: number;
+    totalSpent?: number | string;
     favoriteArtists?: number;
     totalUsers?: number;
     activeDisputes?: number;
     completedBookings?: number;
     pendingApprovals?: number;
+    upcomingEventsCount?: number;
+    totalRevenue?: string;
   };
 }
 
@@ -32,7 +34,7 @@ export function QuickStats({ userRole, data = {} }: QuickStatsProps) {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <MetricCard
           title="Total Earnings"
-          value={`$${data.totalEarnings?.toLocaleString() || '0'}`}
+          value={typeof data.totalEarnings === 'string' ? data.totalEarnings : `$${data.totalEarnings?.toLocaleString() || '0'}`}
           description="This month"
           icon={DollarSign}
           trend={{ value: 12, isPositive: true }}
@@ -67,7 +69,7 @@ export function QuickStats({ userRole, data = {} }: QuickStatsProps) {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <MetricCard
           title="Total Spent"
-          value={`$${data.totalSpent?.toLocaleString() || '0'}`}
+          value={typeof data.totalSpent === 'string' ? data.totalSpent : `$${data.totalSpent?.toLocaleString() || '0'}`}
           description="All time"
           icon={DollarSign}
         />
@@ -86,7 +88,7 @@ export function QuickStats({ userRole, data = {} }: QuickStatsProps) {
         />
         <MetricCard
           title="Upcoming Events"
-          value={data.upcomingBookings || 0}
+          value={data.upcomingEventsCount || data.upcomingBookings || 0}
           description="Next 30 days"
           icon={Clock}
           trend={{ value: 3, isPositive: true }}
