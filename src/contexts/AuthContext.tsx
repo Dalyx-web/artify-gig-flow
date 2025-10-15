@@ -76,23 +76,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.log('🔍 Fetching profile for user:', authUser.id, authUser.email);
       
       // Fetch user profile from profiles table
-      const { data: profile, error } = await supabase
+      const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('*')
         .eq('user_id', authUser.id)
-        .single();
+        .maybeSingle();
 
-      console.log('📋 Profile query result:', { profile, error });
-
-      if (error && error.code !== 'PGRST116') {
-        console.error('❌ Error fetching profile:', error);
-        return;
+      if (profileError) {
+        console.error('❌ Error fetching profile:', profileError);
       }
+
+      // Fetch user role from user_roles table (secure)
+      const { data: roleData, error: roleError } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', authUser.id)
+        .maybeSingle();
+
+      if (roleError) {
+        console.error('❌ Error fetching role:', roleError);
+      }
+
+      console.log('📋 Profile query result:', { profile, roleData });
 
       // Create extended user object
       const appUser: AppUser = {
         ...authUser,
-        role: (profile?.user_type as UserRole) || 'client',
+        role: (roleData?.role as UserRole) || 'client',
         profile: profile || {}
       };
 
